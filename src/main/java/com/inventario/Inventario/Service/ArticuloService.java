@@ -23,9 +23,7 @@ public class ArticuloService {
 
         List<ArticuloDto> articuloDtoList = new ArrayList<>();
 
-        for (int i = 0; i < articuloEntityList.size(); i++){
-
-            ArticuloEntity articuloEntity = articuloEntityList.get(i);
+        articuloEntityList.forEach((articuloEntity) -> {
 
             ArticuloDto articuloDto = new ArticuloDto();
 
@@ -37,7 +35,7 @@ public class ArticuloService {
             articuloDto.setStatus(articuloEntity.getStatus());
 
             articuloDtoList.add(articuloDto);
-        }
+        });
 
         return articuloDtoList;
     }

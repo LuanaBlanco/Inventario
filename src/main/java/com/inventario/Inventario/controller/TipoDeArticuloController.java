@@ -3,9 +3,12 @@ package com.inventario.Inventario.controller;
 import com.inventario.Inventario.Service.TipoDeArticuloService;
 import com.inventario.Inventario.dto.TipoDeArticuloDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.invoke.StringConcatException;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -38,7 +41,15 @@ public class TipoDeArticuloController {
     }
 
     @DeleteMapping(path = "/eliminar/{id}")
-    public String deleteById(@PathVariable("id") Long id) {
-       return  this.tipoDeArticuloService.deleteTipoDeArticulo(id);
+    public ResponseEntity<String> deleteById(@PathVariable("id") Long id){
+        try {
+            return this.tipoDeArticuloService.deleteTipoDeArticulo(id);
+        }catch (Exception e){
+            return new ResponseEntity<>("No existe el id " + id, HttpStatus.NOT_FOUND);
+        }
+
+
+
     }
+
 }

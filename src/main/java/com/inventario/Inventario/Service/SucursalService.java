@@ -24,9 +24,8 @@ public class SucursalService {
 
         List<SucursalDto> sucursalDtoList = new ArrayList<>();
 
-        for (int i = 0; i < sucursalEntityList.size(); i++){
+        sucursalEntityList.forEach((sucursalEntity) -> {
 
-        SucursalEntity sucursalEntity = sucursalEntityList.get(i);
 
         SucursalDto sucursalDto = new SucursalDto();
 
@@ -37,7 +36,7 @@ public class SucursalService {
         sucursalDto.setStatus(sucursalEntity.getStatus());
 
         sucursalDtoList.add(sucursalDto);
-    }
+    });
 
     return sucursalDtoList;
     }

@@ -2,10 +2,14 @@ package com.inventario.Inventario.Service;
 
 import com.inventario.Inventario.dto.TipoDeArticuloDto;
 import com.inventario.Inventario.enums.ArticuloStatus;
+import com.inventario.Inventario.model.ArticuloEntity;
 import com.inventario.Inventario.model.TipoDeArticuloEntity;
 import com.inventario.Inventario.repository.ITipoDeArticuloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,21 +27,19 @@ public class TipoDeArticuloService {
 
         List<TipoDeArticuloDto> tipoDeArticuloDtoList = new ArrayList<>();
 
-        for (int i = 0; i < tipoDeArticuloEntityList.size(); i++){
-
-            TipoDeArticuloEntity tipoDeArticuloEntity = tipoDeArticuloEntityList.get(i);
+        tipoDeArticuloEntityList.forEach ( (tipoDeArticuloEntity) -> {
 
             TipoDeArticuloDto tipoDeArticuloDto = new TipoDeArticuloDto();
 
-           tipoDeArticuloDto.setTipoDeArticulo(tipoDeArticuloEntity.getTipoDeArticulo());
-           tipoDeArticuloDto.setColor(tipoDeArticuloEntity.getColor());
-           tipoDeArticuloDto.setTamaño(tipoDeArticuloEntity.getTamaño());
-           tipoDeArticuloDto.setFechaModificacion(tipoDeArticuloEntity.getFechaModificacion());
-           tipoDeArticuloDto.setFechaCreacion(tipoDeArticuloEntity.getFechaCreacion());
-           tipoDeArticuloDto.setStatus(tipoDeArticuloEntity.getStatus());
+            tipoDeArticuloDto.setTipoDeArticulo(tipoDeArticuloEntity.getTipoDeArticulo());
+            tipoDeArticuloDto.setColor(tipoDeArticuloEntity.getColor());
+            tipoDeArticuloDto.setTamaño(tipoDeArticuloEntity.getTamaño());
+            tipoDeArticuloDto.setFechaCreacion(tipoDeArticuloEntity.getFechaCreacion());
+            tipoDeArticuloDto.setStatus(tipoDeArticuloEntity.getStatus());
 
             tipoDeArticuloDtoList.add(tipoDeArticuloDto);
-        }
+
+        });
 
         return tipoDeArticuloDtoList;
     }
@@ -111,16 +113,16 @@ public class TipoDeArticuloService {
 
     }
 
-    public String deleteTipoDeArticulo(Long id) {
-        Optional<TipoDeArticuloEntity> optionalTipoDeArticulo= tipoDeArticuloRepository.findById(id);
-        if (optionalTipoDeArticulo.isPresent()) {
-            TipoDeArticuloEntity tipoDeArticuloEntity = optionalTipoDeArticulo.get();
-            tipoDeArticuloEntity.setStatus(ArticuloStatus.INACTIVO.name());
-            tipoDeArticuloEntity.setFechaModificacion(LocalDateTime.now());
-            tipoDeArticuloRepository.save(tipoDeArticuloEntity);
-            return "Articulo eliminado";
-        } else {
-            return "Error";
+    public ResponseEntity<String>deleteTipoDeArticulo(Long id) throws Exception {
+        Optional<TipoDeArticuloEntity> optionalTipoDeArticulo = tipoDeArticuloRepository.findById(id);
+            if (optionalTipoDeArticulo.isPresent()) {
+                TipoDeArticuloEntity tipoDeArticuloEntity = optionalTipoDeArticulo.get();
+                tipoDeArticuloEntity.setStatus(ArticuloStatus.INACTIVO.name());
+                tipoDeArticuloEntity.setFechaModificacion(LocalDateTime.now());
+                tipoDeArticuloRepository.save(tipoDeArticuloEntity);
+                return new ResponseEntity<>("",HttpStatus.OK);
+            } else {
+                throw new Exception("Error no existe el id " + id);
+            }
         }
-    }
 }

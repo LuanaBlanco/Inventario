@@ -25,9 +25,7 @@ public class EmpleadoService {
 
         List<EmpleadoDto> empleadoDtoList = new ArrayList<>();
 
-        for (int i = 0; i < empleadoEntityList.size(); i++){
-
-            EmpleadoEntity empleadoEntity = empleadoEntityList.get(i);
+        empleadoEntityList.forEach((empleadoEntity) -> {
 
             EmpleadoDto empleadoDto = new EmpleadoDto();
 
@@ -41,7 +39,7 @@ public class EmpleadoService {
             empleadoDto.setStatus(empleadoEntity.getStatus());
 
             empleadoDtoList.add(empleadoDto);
-        }
+        });
 
         return empleadoDtoList;
     }
