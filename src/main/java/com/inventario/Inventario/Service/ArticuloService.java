@@ -5,7 +5,10 @@ import com.inventario.Inventario.enums.ArticuloStatus;
 import com.inventario.Inventario.model.ArticuloEntity;
 import com.inventario.Inventario.repository.IArticuloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +21,7 @@ public class ArticuloService {
     @Autowired
     IArticuloRepository articuloRepository;
 
-    public List<ArticuloDto> getArticulo(){
+    public ResponseEntity<List> getArticulo(){
         List<ArticuloEntity> articuloEntityList = this.articuloRepository.findAll();
 
         List<ArticuloDto> articuloDtoList = new ArrayList<>();
@@ -37,10 +40,10 @@ public class ArticuloService {
             articuloDtoList.add(articuloDto);
         });
 
-        return articuloDtoList;
+        return new ResponseEntity<List>(articuloDtoList,HttpStatus.OK);
     }
 
-    public ArticuloDto saveArticulo(ArticuloDto articulo){
+    public ResponseEntity<ArticuloDto> saveArticulo(ArticuloDto articulo){
         ArticuloEntity articuloEntity = new ArticuloEntity();
 
         articuloEntity.setNombre(articulo.getNombre());
@@ -62,10 +65,10 @@ public class ArticuloService {
         articuloDto.setStatus(articuloGuardado.getStatus());
         articuloDto.setStatus(ArticuloStatus.ACTIVO.name());
 
-        return articuloDto;
+        return new ResponseEntity<>(articuloDto,HttpStatus.CREATED);
     }
 
-    public ArticuloDto getById(Long id){
+    public ResponseEntity<ArticuloDto> getById(Long id){
 
         ArticuloEntity articuloEntity = this.articuloRepository.findById(id).get();
 
@@ -78,10 +81,10 @@ public class ArticuloService {
         articuloDto.setFechaCreacion(articuloEntity.getFechaCreacion());
         articuloDto.setStatus(articuloEntity.getStatus());
 
-        return articuloDto;
+        return new ResponseEntity<>(articuloDto,HttpStatus.OK);
     }
 
-    public ArticuloDto updateById(ArticuloDto request , Long id){
+    public ResponseEntity<ArticuloDto> updateById(ArticuloDto request , Long id){
 
         ArticuloEntity articuloEntity = articuloRepository.findById(id).get();
 
@@ -105,20 +108,48 @@ public class ArticuloService {
         articuloDto.setStatus(articuloGuardado.getStatus());
         articuloDto.setStatus(ArticuloStatus.ACTIVO.name());
 
-        return articuloDto;
+        return new ResponseEntity<>(articuloDto,HttpStatus.OK);
 
     }
 
-    public String deleteArticulo(Long id) {
+
+    public ResponseEntity<Void> addById(int cantidad, Long id ) {
+
+        ArticuloEntity articuloEntity = articuloRepository.findById(id).get();
+        articuloEntity.setCantidad(cantidad + articuloEntity.getCantidad());
+
+        articuloRepository.save(articuloEntity);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    public ResponseEntity<Void> subtractById(int cantidad, Long id ) {
+
+        ArticuloEntity articuloEntity = articuloRepository.findById(id).get();
+        if (cantidad <= articuloEntity.getCantidad()) {
+
+            articuloEntity.setCantidad(articuloEntity.getCantidad() - cantidad);
+
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        articuloRepository.save(articuloEntity);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    public ResponseEntity<String> deleteArticulo(Long id) {
         Optional<ArticuloEntity> optionalArticulo = articuloRepository.findById(id);
         if (optionalArticulo.isPresent()) {
             ArticuloEntity articuloEntity = optionalArticulo.get();
             articuloEntity.setStatus(ArticuloStatus.INACTIVO.name());
             articuloEntity.setFechaModificacion(LocalDateTime.now());
             articuloRepository.save(articuloEntity);
-            return "Articulo eliminado";
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return "Error";
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }
