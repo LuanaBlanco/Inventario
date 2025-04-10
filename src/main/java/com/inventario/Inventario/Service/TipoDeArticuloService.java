@@ -22,7 +22,7 @@ public class TipoDeArticuloService {
     @Autowired
     ITipoDeArticuloRepository tipoDeArticuloRepository;
 
-    public List<TipoDeArticuloDto> getTipoDeArticulo(){
+    public ResponseEntity<List> getTipoDeArticulo(){
         List<TipoDeArticuloEntity> tipoDeArticuloEntityList = this.tipoDeArticuloRepository.findAll();
 
         List<TipoDeArticuloDto> tipoDeArticuloDtoList = new ArrayList<>();
@@ -41,10 +41,10 @@ public class TipoDeArticuloService {
 
         });
 
-        return tipoDeArticuloDtoList;
+        return new ResponseEntity<List>(tipoDeArticuloDtoList,HttpStatus.OK);
     }
 
-    public TipoDeArticuloDto saveTipoDeArticulo(TipoDeArticuloDto tipo){
+    public ResponseEntity<TipoDeArticuloDto> saveTipoDeArticulo(TipoDeArticuloDto tipo){
         TipoDeArticuloEntity tipoDeArticuloEntity = new TipoDeArticuloEntity();
 
         tipoDeArticuloEntity.setTipoDeArticulo(tipo.getTipoDeArticulo());
@@ -66,10 +66,10 @@ public class TipoDeArticuloService {
         tipoDeArticuloDto.setStatus(tipoArticuloGuardado.getStatus());
         tipoDeArticuloDto.setStatus(ArticuloStatus.ACTIVO.name());
 
-        return tipoDeArticuloDto;
+        return new ResponseEntity<TipoDeArticuloDto>(tipoDeArticuloDto,HttpStatus.CREATED);
     }
 
-    public TipoDeArticuloDto getById(Long id){
+    public ResponseEntity<TipoDeArticuloDto> getById(Long id){
 
         TipoDeArticuloEntity tipoDeArticuloEntity= this.tipoDeArticuloRepository.findById(id).get();
 
@@ -82,10 +82,10 @@ public class TipoDeArticuloService {
         tipoDeArticuloDto.setFechaCreacion(tipoDeArticuloEntity.getFechaCreacion());
         tipoDeArticuloDto.setStatus(tipoDeArticuloEntity.getStatus());
 
-        return tipoDeArticuloDto;
+        return new ResponseEntity<TipoDeArticuloDto>(tipoDeArticuloDto,HttpStatus.OK);
     }
 
-    public TipoDeArticuloDto updateById(TipoDeArticuloDto request , Long id){
+    public ResponseEntity<TipoDeArticuloDto> updateById(TipoDeArticuloDto request , Long id){
 
         TipoDeArticuloEntity tipoDeArticuloEntity = tipoDeArticuloRepository.findById(id).get();
 
@@ -109,11 +109,11 @@ public class TipoDeArticuloService {
         tipoDeArticuloDto.setStatus(tipoArticuloGuardado.getStatus());
         tipoDeArticuloDto.setStatus(ArticuloStatus.PENDIENTE.name());
 
-        return tipoDeArticuloDto;
+        return new ResponseEntity<TipoDeArticuloDto>(tipoDeArticuloDto,HttpStatus.OK);
 
     }
 
-    public ResponseEntity<String>deleteTipoDeArticulo(Long id) throws Exception {
+    public ResponseEntity<String>deleteTipoDeArticulo(Long id) {
         Optional<TipoDeArticuloEntity> optionalTipoDeArticulo = tipoDeArticuloRepository.findById(id);
             if (optionalTipoDeArticulo.isPresent()) {
                 TipoDeArticuloEntity tipoDeArticuloEntity = optionalTipoDeArticulo.get();
@@ -122,7 +122,7 @@ public class TipoDeArticuloService {
                 tipoDeArticuloRepository.save(tipoDeArticuloEntity);
                 return new ResponseEntity<>("",HttpStatus.OK);
             } else {
-                throw new Exception("Error no existe el id " + id);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
 }

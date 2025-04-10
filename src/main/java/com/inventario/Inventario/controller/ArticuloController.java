@@ -5,6 +5,7 @@ import com.inventario.Inventario.dto.ArticuloDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +64,10 @@ public class ArticuloController {
     @Operation(summary = "delete an article by id")
     @DeleteMapping(path = "/eliminar/{id}")
     public ResponseEntity<String> deleteById(@PathVariable("id") Long id) {
-        return this.articuloService.deleteArticulo(id);
+        try {
+            return this.articuloService.deleteArticulo(id);
+        }catch (Exception e){
+            return new ResponseEntity<>("No existe el id " + id, HttpStatus.NOT_FOUND);
+        }
     }
 }

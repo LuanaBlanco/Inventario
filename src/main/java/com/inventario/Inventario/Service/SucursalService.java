@@ -107,7 +107,7 @@ public class SucursalService {
 
     }
 
-    public ResponseEntity<Void> deleteSucursal(Long id) {
+    public ResponseEntity<String> deleteSucursal(Long id) {
         Optional<SucursalEntity> optionalSucursal = sucursalRepository.findById(id);
         if (optionalSucursal.isPresent()) {
             SucursalEntity sucursalEntity = optionalSucursal.get();

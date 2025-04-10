@@ -24,25 +24,25 @@ public class TipoDeArticuloController {
 
     @Operation(summary = "get a type of article")
     @GetMapping(path = "/traer")
-    public List<TipoDeArticuloDto> getTipoDeArticulo() {
+    public ResponseEntity<List> getTipoDeArticulo() {
         return this.tipoDeArticuloService.getTipoDeArticulo();
     }
 
     @Operation(summary = "save a type of article")
     @PostMapping(path = "/crear", consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public TipoDeArticuloDto saveTipoDeArticulo(@RequestBody TipoDeArticuloDto tipo) {
+    public ResponseEntity<TipoDeArticuloDto> saveTipoDeArticulo(@RequestBody TipoDeArticuloDto tipo) {
         return this.tipoDeArticuloService.saveTipoDeArticulo(tipo);
     }
 
     @Operation(summary = "get a type of article by id")
     @GetMapping(path = "/traer/{id}")
-    public TipoDeArticuloDto getTipoDeArticuloById(@PathVariable Long id) {
+    public ResponseEntity<TipoDeArticuloDto> getTipoDeArticuloById(@PathVariable Long id) {
         return this.tipoDeArticuloService.getById(id);
     }
 
     @Operation(summary = "update a type of article by id")
     @PutMapping(path = "/editar/{id}")
-    public TipoDeArticuloDto updateById(@RequestBody TipoDeArticuloDto request, @PathVariable Long id) {
+    public ResponseEntity<TipoDeArticuloDto> updateById(@RequestBody TipoDeArticuloDto request, @PathVariable Long id) {
         return this.tipoDeArticuloService.updateById(request, id);
     }
 

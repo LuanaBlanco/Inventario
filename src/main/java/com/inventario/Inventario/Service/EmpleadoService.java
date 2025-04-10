@@ -125,7 +125,7 @@ public class EmpleadoService {
 
     }
 
-    public ResponseEntity<Void> deleteEmpleado(Long id) {
+    public ResponseEntity<String> deleteEmpleado(Long id) {
         Optional<EmpleadoEntity> optionalEmpleado = empleadoRepository.findById(id);
         if (optionalEmpleado.isPresent()) {
             EmpleadoEntity empleadoEntity = optionalEmpleado.get();

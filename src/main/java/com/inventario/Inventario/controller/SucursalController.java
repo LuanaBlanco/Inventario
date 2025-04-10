@@ -5,6 +5,7 @@ import com.inventario.Inventario.dto.SucursalDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,8 +48,12 @@ public class SucursalController {
 
     @Operation(summary = "delete a branch by id")
     @DeleteMapping(path = "/eliminar/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable("id") Long id) {
-       return this.sucursalService.deleteSucursal(id);
+    public ResponseEntity<String> deleteById(@PathVariable("id") Long id) {
+        try {
+            return this.sucursalService.deleteSucursal(id);
+        }catch (Exception e){
+            return new ResponseEntity<>("No existe el id " + id, HttpStatus.NOT_FOUND);
+        }
 
     }
 }
