@@ -6,6 +6,8 @@ import com.inventario.Inventario.enums.EmpleadoStatus;
 import com.inventario.Inventario.model.EmpleadoEntity;
 import com.inventario.Inventario.repository.IEmpleadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,7 +22,7 @@ public class EmpleadoService {
     @Autowired
     IEmpleadoRepository empleadoRepository;
 
-    public List<EmpleadoDto> getEmpleado(){
+    public ResponseEntity<List>getEmpleado(){
         List<EmpleadoEntity> empleadoEntityList = this.empleadoRepository.findAll();
 
         List<EmpleadoDto> empleadoDtoList = new ArrayList<>();
@@ -41,10 +43,10 @@ public class EmpleadoService {
             empleadoDtoList.add(empleadoDto);
         });
 
-        return empleadoDtoList;
+        return new ResponseEntity<List>(empleadoDtoList,HttpStatus.OK);
     }
 
-    public EmpleadoDto saveEmpleado(EmpleadoDto empleado){
+    public ResponseEntity<EmpleadoDto> saveEmpleado(EmpleadoDto empleado){
         EmpleadoEntity empleadoEntity = new EmpleadoEntity();
 
         empleadoEntity.setNombre(empleado.getNombre());
@@ -68,10 +70,10 @@ public class EmpleadoService {
         empleadoDto.setStatus(empleadoGuardado.getStatus());
         empleadoDto.setStatus(EmpleadoStatus.ACTIVO.name());
 
-        return empleadoDto;
+        return new ResponseEntity<EmpleadoDto>(empleadoDto,HttpStatus.CREATED);
     }
 
-    public EmpleadoDto getById(Long id){
+    public ResponseEntity<EmpleadoDto> getById(Long id){
 
         EmpleadoEntity empleadoEntity = this.empleadoRepository.findById(id).get();
 
@@ -86,10 +88,10 @@ public class EmpleadoService {
         empleadoDto.setFechaRetorno(empleadoEntity.getFechaRetorno());
         empleadoDto.setStatus(empleadoEntity.getStatus());
 
-        return empleadoDto;
+        return new ResponseEntity<EmpleadoDto>(empleadoDto,HttpStatus.OK);
     }
 
-    public EmpleadoDto updateById(EmpleadoDto request , Long id){
+    public ResponseEntity<EmpleadoDto> updateById(EmpleadoDto request , Long id){
 
         EmpleadoEntity empleadoEntity = empleadoRepository.findById(id).get();
 
@@ -119,20 +121,20 @@ public class EmpleadoService {
         empleadoDto.setStatus(empleadoGuardado.getStatus());
         empleadoDto.setStatus(EmpleadoStatus.CON_LICENCIA.name());
 
-        return empleadoDto;
+        return new ResponseEntity<EmpleadoDto>(empleadoDto,HttpStatus.OK);
 
     }
 
-    public String deleteEmpleado(Long id) {
+    public ResponseEntity<Void> deleteEmpleado(Long id) {
         Optional<EmpleadoEntity> optionalEmpleado = empleadoRepository.findById(id);
         if (optionalEmpleado.isPresent()) {
             EmpleadoEntity empleadoEntity = optionalEmpleado.get();
             empleadoEntity.setStatus(EmpleadoStatus.INACTIVO.name());
             empleadoEntity.setFechaModificacion(LocalDateTime.now());
             empleadoRepository.save(empleadoEntity);
-            return "Empleado eliminado";
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return "Error";
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }
