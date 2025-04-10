@@ -5,6 +5,8 @@ import com.inventario.Inventario.enums.SucursalStatus;
 import com.inventario.Inventario.model.SucursalEntity;
 import com.inventario.Inventario.repository.ISucursalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,7 +20,7 @@ public class SucursalService {
     @Autowired
     ISucursalRepository sucursalRepository;
 
-    public List<SucursalDto> getSucursal(){
+    public ResponseEntity<List> getSucursal(){
 
         List<SucursalEntity> sucursalEntityList = this.sucursalRepository.findAll();
 
@@ -38,10 +40,10 @@ public class SucursalService {
         sucursalDtoList.add(sucursalDto);
     });
 
-    return sucursalDtoList;
+    return new ResponseEntity<List>(sucursalDtoList, HttpStatus.OK);
     }
 
-    public SucursalDto saveSucursal(SucursalDto sucursal){
+    public ResponseEntity<SucursalDto> saveSucursal(SucursalDto sucursal){
         SucursalEntity sucursalEntity = new SucursalEntity();
 
         sucursalEntity.setNombre(sucursal.getNombre());
@@ -61,10 +63,10 @@ public class SucursalService {
         sucursalDto.setStatus(sucursalGuardada.getStatus());
         sucursalDto.setStatus(SucursalStatus.ACTIVA.name());
 
-        return sucursalDto;
+        return new ResponseEntity<SucursalDto>(sucursalDto,HttpStatus.CREATED);
     }
 
-    public SucursalDto getById(Long id){
+    public ResponseEntity<SucursalDto> getById(Long id){
 
         SucursalEntity sucursalEntity = this.sucursalRepository.findById(id).get();
 
@@ -76,10 +78,10 @@ public class SucursalService {
         sucursalDto.setFechaModificacion(sucursalEntity.getFechaModificacion());
         sucursalDto.setStatus(sucursalEntity.getStatus());
 
-        return sucursalDto;
+        return new ResponseEntity<SucursalDto>(sucursalDto,HttpStatus.OK);
     }
 
-    public SucursalDto updateById(SucursalDto request , Long id){
+    public ResponseEntity<SucursalDto> updateById(SucursalDto request , Long id){
 
         SucursalEntity sucursalEntity = sucursalRepository.findById(id).get();
 
@@ -101,20 +103,20 @@ public class SucursalService {
         sucursalDto.setStatus(sucursalGuardada.getStatus());
         sucursalDto.setStatus(SucursalStatus.ACTIVA.name());
 
-        return sucursalDto;
+        return new ResponseEntity<SucursalDto>(sucursalDto,HttpStatus.OK);
 
     }
 
-    public String deleteSucursal(Long id) {
+    public ResponseEntity<Void> deleteSucursal(Long id) {
         Optional<SucursalEntity> optionalSucursal = sucursalRepository.findById(id);
         if (optionalSucursal.isPresent()) {
             SucursalEntity sucursalEntity = optionalSucursal.get();
             sucursalEntity.setStatus(SucursalStatus.INACTIVA.name());
             sucursalEntity.setFechaModificacion(LocalDateTime.now());
             sucursalRepository.save(sucursalEntity);
-            return "Sucursal eliminada";
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return "Error";
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }
