@@ -29,27 +29,36 @@ public class AriculoTest {
     private ArticuloService articuloService;
 
     @Test
-    public void sumaTest(){
-        when(articuloRepository.findById(any())).thenReturn(Optional.of(new ArticuloEntity()));
+    public void sumaTestOk(){
+        when(articuloRepository.findById(any())).thenReturn(Optional.of(crearArticuloEntity()));
         when(articuloRepository.save(any())).thenReturn(new ArticuloEntity());
-        final ResponseEntity<Void> resultado = articuloService.addById(2,2L);
+        final ResponseEntity<Void> resultado = articuloService.addById(2,1L);
         Assertions.assertEquals(HttpStatus.OK,resultado.getStatusCode());
     }
 
     @Test
-    public void restaTest(){
-
-        when(articuloRepository.findById(any())).thenReturn(Optional.of(new ArticuloEntity()));
+    public void restaTestOk(){
+        when(articuloRepository.findById(any())).thenReturn(Optional.of(crearArticuloEntity()));
         when(articuloRepository.save(any())).thenReturn(new ArticuloEntity());
-        final ResponseEntity<Void> resultado = articuloService.subtractById(2,2L);
-        ArticuloEntity articuloEntity = new ArticuloEntity();
-        if (resultado == articuloService.subtractById(3,2L)) {
-            Assertions.assertEquals(HttpStatus.OK, resultado.getStatusCode());
-        }else {
-            Assertions.assertTrue(true);
-        }
-
+        final ResponseEntity<Void> resultado = articuloService.subtractById(2,1L);
+        Assertions.assertEquals(HttpStatus.OK, resultado.getStatusCode());
     }
+
+    private ArticuloEntity crearArticuloEntity(){
+        ArticuloEntity articuloEntity = new ArticuloEntity();
+        articuloEntity.setCantidad(2);
+        articuloEntity.setId(3);
+        return articuloEntity;
+    }
+
+    @Test
+    public void restaTestFail(){
+        when(articuloRepository.findById(any())).thenReturn(Optional.of(crearArticuloEntity()));
+        when(articuloRepository.save(any())).thenReturn(new ArticuloEntity());
+        final ResponseEntity<Void> resultado = articuloService.subtractById(4,1L);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND,resultado.getStatusCode());
+    }
+
 }
 
 

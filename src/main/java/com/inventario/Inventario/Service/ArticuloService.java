@@ -123,7 +123,7 @@ public class ArticuloService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> subtractById(int cantidad, Long id ) {
+    public ResponseEntity<Void> subtractById(int cantidad, Long id) {
 
         ArticuloEntity articuloEntity = articuloRepository.findById(id).get();
         if (cantidad <= articuloEntity.getCantidad()) {

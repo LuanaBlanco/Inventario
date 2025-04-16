@@ -49,7 +49,7 @@ public class ArticuloController {
         return this.articuloService.updateById(request, id);
     }
 
-    @Operation(summary = "aad an article by id")
+    @Operation(summary = "add an article by id")
     @PutMapping(path = "/sumar/{id}/cantidad/{cantidad}")
     public ResponseEntity<Void> addById(@PathVariable Long id, @PathVariable int cantidad ) {
         return this.articuloService.addById(cantidad,id);
